@@ -65,7 +65,7 @@ p {
 img {
   max-width: 250px;
   margin: 20px 0;
-  border: 50px ;
+  border-radius: 50px ;
 }
 
 
