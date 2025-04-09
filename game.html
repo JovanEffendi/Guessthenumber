@@ -70,22 +70,27 @@
             let guess = Number(guessInput.value);
             let result = document.getElementById("result");
             numGuesses++;
-
+        
             guesses.push(guess); 
-
+        
             let outcome = evaluateGuess(guess, numberToGuess); 
-
+        
             if (outcome === "correct") {
                 result.textContent = `🎉 You guessed it in ${numGuesses} tries! Your guesses: ${guesses.join(", ")}`;
                 score += Math.max(10 - numGuesses, 1);
                 document.getElementById("score").textContent = score;
-                resetGame();
-            } else if (outcome === "low") {
-                result.textContent = `Try a higher number.`;
-            } else {
-                result.textContent = `Try a lower number.`;
-            }
-        }
+
+        // ✅ Delay reset so user sees their success message
+        setTimeout(() => {
+            resetGame();
+        }, 3000);
+    } else if (outcome === "low") {
+        result.textContent = `Try a higher number.`;
+    } else {
+        result.textContent = `Try a lower number.`;
+    }
+}
+
 
         function resetGame() {
             numberToGuess = Math.floor(Math.random() * upperBound) + lowerBound;
