@@ -5,33 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guess the Number Game</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .radio-inputs {
+            margin-bottom: 20px;
+        }
+
+        .button-group {
+            margin-bottom: 40px;
+        }
+
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+        input[type="number"] {
+            padding: 8px;
+            font-size: 16px;
+            width: 80px;
+        }
+
+        .score {
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <div class="radio-inputs">
         <label class="radio">
             <input type="radio" name="difficulty" value="easy" checked onchange="setDifficulty()">
-            <span class="name">Easy (1-50)</span>
+            <span class="name">Easy (1–50)</span>
         </label>
         <label class="radio">
             <input type="radio" name="difficulty" value="medium" onchange="setDifficulty()">
-            <span class="name">Medium (1-100)</span>
+            <span class="name">Medium (1–100)</span>
         </label>
         <label class="radio">
             <input type="radio" name="difficulty" value="hard" onchange="setDifficulty()">
-            <span class="name">Hard (1-200)</span>
+            <span class="name">Hard (1–200)</span>
         </label>
     </div>
 
     <h1>Guess the Number</h1>
-    <img src="game.png" alt="Game">
+    <img src="game.png" alt="Game" width="200">
 
     <p>Guess a number between <span id="lowerBound">1</span> and <span id="upperBound">100</span>:</p>
     <input type="number" id="guessInput" min="1" max="100">
 
-    <br><br>
-    <button onclick="guessNumber()">Guess</button>
-    <button onclick="resetGame()">Reset</button>
-    <button onclick="goHome()">Home</button>
+    <div class="button-group">
+        <button onclick="guessNumber()">Guess</button>
+        <button onclick="resetGame()">Reset</button>
+        <button onclick="goHome()">Home</button>
+    </div>
 
     <p id="result"></p>
     <p class="score">Score: <span id="score">0</span></p>
@@ -59,6 +92,7 @@
             resetGame();
         }
 
+        // ✅ Student-developed procedure
         function evaluateGuess(userGuess, correctNumber) {
             if (userGuess === correctNumber) return "correct";
             if (userGuess < correctNumber) return "low";
@@ -70,27 +104,25 @@
             let guess = Number(guessInput.value);
             let result = document.getElementById("result");
             numGuesses++;
-        
-            guesses.push(guess); 
-        
-            let outcome = evaluateGuess(guess, numberToGuess); 
-        
+            guesses.push(guess);
+
+            let outcome = evaluateGuess(guess, numberToGuess); // ✅ Call to student-developed procedure
+
             if (outcome === "correct") {
                 result.textContent = `🎉 You guessed it in ${numGuesses} tries! Your guesses: ${guesses.join(", ")}`;
                 score += Math.max(10 - numGuesses, 1);
                 document.getElementById("score").textContent = score;
 
-        // ✅ Delay reset so user sees their success message
-        setTimeout(() => {
-            resetGame();
-        }, 3000);
-    } else if (outcome === "low") {
-        result.textContent = `Try a higher number.`;
-    } else {
-        result.textContent = `Try a lower number.`;
-    }
-}
-
+                // Delay reset so player sees win message
+                setTimeout(() => {
+                    resetGame();
+                }, 3000);
+            } else if (outcome === "low") {
+                result.textContent = `Try a higher number.`;
+            } else {
+                result.textContent = `Try a lower number.`;
+            }
+        }
 
         function resetGame() {
             numberToGuess = Math.floor(Math.random() * upperBound) + lowerBound;
@@ -107,4 +139,3 @@
     </script>
 </body>
 </html>
-
