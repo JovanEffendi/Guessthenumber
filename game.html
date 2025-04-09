@@ -4,37 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guess the Number Game</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
     <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --button-bg: #f0f0f0;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #ffffff;
+            --button-bg: #1f1f1f;
+        }
+
         body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
             font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .radio-inputs {
-            margin-bottom: 20px;
-        }
-
-        .button-group {
-            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         button {
-            margin: 5px;
-            padding: 10px 20px;
-            font-size: 16px;
+            background-color: var(--button-bg);
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            margin: 0.5rem;
+            border: 1px solid #888;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
 
-        input[type="number"] {
-            padding: 8px;
-            font-size: 16px;
-            width: 80px;
+        .radio-inputs {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .score {
-            font-size: 18px;
             font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        .theme-toggle {
+            margin-top: 2rem;
         }
     </style>
 </head>
@@ -42,25 +63,23 @@
     <div class="radio-inputs">
         <label class="radio">
             <input type="radio" name="difficulty" value="easy" checked onchange="setDifficulty()">
-            <span class="name">Easy (1–50)</span>
+            <span class="name">Easy (1-50)</span>
         </label>
         <label class="radio">
             <input type="radio" name="difficulty" value="medium" onchange="setDifficulty()">
-            <span class="name">Medium (1–100)</span>
+            <span class="name">Medium (1-100)</span>
         </label>
         <label class="radio">
             <input type="radio" name="difficulty" value="hard" onchange="setDifficulty()">
-            <span class="name">Hard (1–200)</span>
+            <span class="name">Hard (1-200)</span>
         </label>
     </div>
 
     <h1>Guess the Number</h1>
-    <img src="game.png" alt="Game" width="200">
-
     <p>Guess a number between <span id="lowerBound">1</span> and <span id="upperBound">100</span>:</p>
     <input type="number" id="guessInput" min="1" max="100">
 
-    <div class="button-group">
+    <div style="margin-top: 1rem; margin-bottom: 2rem;">
         <button onclick="guessNumber()">Guess</button>
         <button onclick="resetGame()">Reset</button>
         <button onclick="goHome()">Home</button>
@@ -68,6 +87,10 @@
 
     <p id="result"></p>
     <p class="score">Score: <span id="score">0</span></p>
+
+    <div class="theme-toggle">
+        <button onclick="toggleTheme()">Toggle 🌙/☀️</button>
+    </div>
 
     <script>
         let lowerBound = 1;
@@ -92,7 +115,6 @@
             resetGame();
         }
 
-        // ✅ Student-developed procedure
         function evaluateGuess(userGuess, correctNumber) {
             if (userGuess === correctNumber) return "correct";
             if (userGuess < correctNumber) return "low";
@@ -104,19 +126,15 @@
             let guess = Number(guessInput.value);
             let result = document.getElementById("result");
             numGuesses++;
-            guesses.push(guess);
 
-            let outcome = evaluateGuess(guess, numberToGuess); // ✅ Call to student-developed procedure
+            guesses.push(guess);
+            let outcome = evaluateGuess(guess, numberToGuess);
 
             if (outcome === "correct") {
                 result.textContent = `🎉 You guessed it in ${numGuesses} tries! Your guesses: ${guesses.join(", ")}`;
                 score += Math.max(10 - numGuesses, 1);
                 document.getElementById("score").textContent = score;
-
-                // Delay reset so player sees win message
-                setTimeout(() => {
-                    resetGame();
-                }, 3000);
+                resetGame();
             } else if (outcome === "low") {
                 result.textContent = `Try a higher number.`;
             } else {
@@ -136,6 +154,15 @@
         function goHome() {
             window.location.assign('index.html');
         }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute("data-theme");
+            document.documentElement.setAttribute(
+                "data-theme",
+                currentTheme === "dark" ? "light" : "dark"
+            );
+        }
     </script>
 </body>
 </html>
+
