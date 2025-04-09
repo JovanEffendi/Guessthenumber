@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guess the Number Game</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
-    <link rel="icon" href="favicon.png" type="image/x-icon">
 </head>
 <body>
     <div class="radio-inputs">
@@ -30,38 +29,12 @@
     <input type="number" id="guessInput" min="1" max="100">
 
     <br><br>
-    <button onclick="guessNumber()">
-        <span>Guess</span>
-        <svg width="34" height="34" viewBox="0 0 74 74" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="37" cy="37" r="35.5" stroke="black" stroke-width="3"></circle>
-            <path d="M25 35.5C24.1716 35.5 23.5 36.1716 23.5 37C23.5 37.8284 24.1716 38.5 25 38.5V35.5ZM49.0607 38.0607C49.6464 37.4749 49.6464 36.5251 49.0607 35.9393L39.5147 26.3934C38.9289 25.8076 37.9792 25.8076 37.3934 26.3934C36.8076 26.9792 36.8076 27.9289 37.3934 28.5147L45.8787 37L37.3934 45.4853C36.8076 46.0711 36.8076 47.0208 37.3934 47.6066C37.9792 48.1924 38.9289 48.1924 39.5147 47.6066L49.0607 38.0607ZM25 38.5L48 38.5V35.5L25 35.5V38.5Z" fill="black"></path>
-        </svg>
-    </button>
-
-    <br><br>
-    <button onclick="resetGame()">
-        <span>Reset</span>
-        <svg width="34" height="34" viewBox="0 0 74 74" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="37" cy="37" r="35.5" stroke="black" stroke-width="3"></circle>
-            <path d="M25 35.5C24.1716 35.5 23.5 36.1716 23.5 37C23.5 37.8284 24.1716 38.5 25 38.5V35.5ZM49.0607 38.0607C49.6464 37.4749 49.6464 36.5251 49.0607 35.9393L39.5147 26.3934C38.9289 25.8076 37.9792 25.8076 37.3934 26.3934C36.8076 26.9792 36.8076 27.9289 37.3934 28.5147L45.8787 37L37.3934 45.4853C36.8076 46.0711 36.8076 47.0208 37.3934 47.6066C37.9792 48.1924 38.9289 48.1924 39.5147 47.6066L49.0607 38.0607ZM25 38.5L48 38.5V35.5L25 35.5V38.5Z" fill="black"></path>
-        </svg>
-    </button>
+    <button onclick="guessNumber()">Guess</button>
+    <button onclick="resetGame()">Reset</button>
+    <button onclick="goHome()">Home</button>
 
     <p id="result"></p>
     <p class="score">Score: <span id="score">0</span></p>
-
-    <br><br>
-    <button onclick="goHome()">
-        <span>Home</span>
-        <svg width="34" height="34" viewBox="0 0 74 74" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="37" cy="37" r="35.5" stroke="black" stroke-width="3"></circle>
-            <path d="M25 35.5C24.1716 35.5 23.5 36.1716 23.5 37C23.5 37.8284 24.1716 38.5 25 38.5V35.5ZM49.0607 38.0607C49.6464 37.4749 49.6464 36.5251 49.0607 35.9393L39.5147 26.3934C38.9289 25.8076 37.9792 25.8076 37.3934 26.3934C36.8076 26.9792 36.8076 27.9289 37.3934 28.5147L45.8787 37L37.3934 45.4853C36.8076 46.0711 36.8076 47.0208 37.3934 47.6066C37.9792 48.1924 38.9289 48.1924 39.5147 47.6066L49.0607 38.0607ZM25 38.5L48 38.5V35.5L25 35.5V38.5Z" fill="black"></path>
-        </svg>
-    </button>
-    
-    
-    
-    
 
     <script>
         let lowerBound = 1;
@@ -69,6 +42,7 @@
         let numberToGuess = Math.floor(Math.random() * upperBound) + lowerBound;
         let numGuesses = 0;
         let score = 0;
+        let guesses = [];
 
         function setDifficulty() {
             let difficulty = document.querySelector('input[name="difficulty"]:checked').value;
@@ -82,41 +56,50 @@
 
             document.getElementById("lowerBound").textContent = lowerBound;
             document.getElementById("upperBound").textContent = upperBound;
+            resetGame();
+        }
+
+        function evaluateGuess(userGuess, correctNumber) {
+            if (userGuess === correctNumber) return "correct";
+            if (userGuess < correctNumber) return "low";
+            return "high";
         }
 
         function guessNumber() {
-    let guessInput = document.getElementById("guessInput");
-    let guess = Number(guessInput.value);
-    let result = document.getElementById("result");
-    numGuesses++;
+            let guessInput = document.getElementById("guessInput");
+            let guess = Number(guessInput.value);
+            let result = document.getElementById("result");
+            numGuesses++;
 
-    if (guess === numberToGuess) {
-        result.textContent = `Congratulations! You guessed the number in ${numGuesses} tries.`;
-        score += Math.max(10 - numGuesses, 1); // Increase score, with more points for fewer guesses
-        document.getElementById("score").textContent = score;
-        resetGame();
-    } else if (guess < numberToGuess) {
-        result.textContent = `Try a higher number.`;
-    } else {
-        result.textContent = `Try a lower number.`;
-    }
-}
-    function goHome() {
-    window.location.assign('index.html');
-}
+            guesses.push(guess); 
 
+            let outcome = evaluateGuess(guess, numberToGuess); 
 
+            if (outcome === "correct") {
+                result.textContent = `🎉 You guessed it in ${numGuesses} tries! Your guesses: ${guesses.join(", ")}`;
+                score += Math.max(10 - numGuesses, 1);
+                document.getElementById("score").textContent = score;
+                resetGame();
+            } else if (outcome === "low") {
+                result.textContent = `Try a higher number.`;
+            } else {
+                result.textContent = `Try a lower number.`;
+            }
+        }
 
-    function resetGame() {
-        // Example reset functionality
-        numberToGuess = Math.floor(Math.random() * upperBound) + lowerBound;
-        numGuesses = 0;
-        score = 0;
-        document.getElementById("guessInput").value = "";
-        document.getElementById("result").textContent = "";
-        document.getElementById("score").textContent = score;
-    }
+        function resetGame() {
+            numberToGuess = Math.floor(Math.random() * upperBound) + lowerBound;
+            numGuesses = 0;
+            guesses = [];
+            document.getElementById("guessInput").value = "";
+            document.getElementById("result").textContent = "";
+            document.getElementById("score").textContent = score;
+        }
 
+        function goHome() {
+            window.location.assign('index.html');
+        }
     </script>
 </body>
 </html>
+
